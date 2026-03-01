@@ -23,6 +23,22 @@
         <ListView Grid.Row="1" 
                   x:Name="ItemList"
                   Background="LightGoldenrodYellow" >
+            <ListView.HeaderTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderBrush="BlueViolet" BorderThickness="0,0,0,1">
+                            <TextBlock Text="Medium" Margin="5,0,0,0" FontWeight="Bold"/>
+                        </Border>
+                        <Border Grid.Column="1" BorderBrush="BlueViolet" BorderThickness="0,0,0,1">
+                            <TextBlock Text="Title" Margin="5,0,0,0" FontWeight="Bold"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </ListView.HeaderTemplate>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="model:MediaItem" >
                     <Grid>
