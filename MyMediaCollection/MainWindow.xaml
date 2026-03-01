@@ -6,6 +6,7 @@
     xmlns:local="using:MyMediaCollection"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="using:MyMediaCollection.Model"
     mc:Ignorable="d"
     Title="MyMediaCollection">
 
@@ -14,6 +15,29 @@
     </Window.SystemBackdrop>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <TextBlock Text="Media" />
+        <ListView Grid.Row="1" 
+                  x:Name="ItemList"
+                  Background="LightGoldenrodYellow" >
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="model:MediaItem" >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{x:Bind
+                            Path=MediumInfo.Name}"/>
+                        <TextBlock Grid.Column="1"
+                                   Text="{x:Bind Path=Name }" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+        </ListView>
     </Grid>
 </Window>
