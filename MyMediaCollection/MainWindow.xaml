@@ -65,5 +65,9 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Button Content="Add Item"
+                HorizontalAlignment="Right" Grid.Row="2" 
+                Margin="8"
+                Click="AddButton_Click"/>
     </Grid>
 </Window>
