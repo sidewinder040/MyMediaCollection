@@ -8,5 +8,8 @@ namespace MyMediaCollection.Enums
 {
     public enum LocationType
     {
+        InCollection,
+        LoanedOut,
+        WishList
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using MyMediaCollection.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +27,7 @@ namespace MyMediaCollection
     /// </summary>
     public partial class App : Application
     {
+        public static MainViewModel ViewModel { get; } = new MainViewModel();
         private Window? _window;
 
         /// <summary>

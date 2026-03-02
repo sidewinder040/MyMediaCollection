@@ -14,6 +14,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using MyMediaCollection.ViewModels;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,107 +26,20 @@ namespace MyMediaCollection
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        private bool _isLoaded;
-        private IList<MediaItem> _items { get; set; }
-        private IList<string> _mediums { get; set; }
-        private IList<MediaItem> _allItems { get; set; }
+        //private bool _isLoaded;
+        //private IList<MediaItem> _items { get; set; }
+        //private IList<string> _mediums { get; set; }
+        //private IList<MediaItem> _allItems { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
-            ItemList.Loaded += ItemList_Loaded;
-            ItemFilter.Loaded += ItemFilter_Loaded;
-            ItemFilter.SelectionChanged += ItemFilter_SelectionChanged;
+            //ItemList.Loaded += ItemList_Loaded;
+            //ItemFilter.Loaded += ItemFilter_Loaded;
+            //ItemFilter.SelectionChanged += ItemFilter_SelectionChanged;
         }
 
-        private void ItemFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var updatedItems = (from item in _allItems
-                                where string.IsNullOrWhiteSpace(ItemFilter.SelectedValue.ToString())
-                                    || ItemFilter.SelectedValue.ToString() == "All"
-                                    || ItemFilter.SelectedValue.ToString() == item.MediaType.ToString()
-                                select item).ToList();
-            ItemList.ItemsSource = updatedItems;
-        }
-
-        private void ItemFilter_Loaded(object sender, RoutedEventArgs e)
-        {
-            var filterCombo = (ComboBox)sender;
-            PopulateData();
-            filterCombo.ItemsSource = _mediums;
-            filterCombo.SelectedIndex = 0;
-        }
-
-        private void ItemList_Loaded(object sender, RoutedEventArgs e)
-        {
-            var listView = sender as ListView;
-            PopulateData();
-            listView.ItemsSource = _items;
-        }
-
-        private void PopulateData()
-        {
-            if (_isLoaded) return;
-
-            _isLoaded = true;
-
-            var cd = new MediaItem
-            {
-                Id = 1,
-                Name = "Classical Favorites",
-                MediaType = Enums.ItemType.Music,
-                MediumInfo = new Medium
-                {
-                    Id = 1,
-                    MediaType = ItemType.Music,
-                    Name = "CD"
-                }
-            };
-            var book = new MediaItem
-            {
-                Id = 2,
-                Name = "Classic Fairy Tales",
-                MediaType = ItemType.Book,
-                MediumInfo = new Medium
-                {
-                    Id = 2,
-                    MediaType = ItemType.Book,
-                    Name = "Book"
-                }
-            };
-            var bluRay = new MediaItem
-            {
-                Id = 3,
-                Name = "The Mummy",
-                MediaType = ItemType.Video,
-                MediumInfo = new Medium
-                {
-                    Id = 3,
-                    MediaType = ItemType.Video,
-                    Name = "Blu Ray"
-                }
-            };
-            _items = new List<MediaItem>
-            {
-                cd,
-                book,
-                bluRay
-            };
-            _allItems = new List<MediaItem>
-            {
-                cd,
-                book,
-                bluRay
-            };
-            _mediums = new List<string>
-            {
-                "All",
-                nameof(ItemType.Book),
-                nameof(ItemType.Music),
-                nameof(ItemType.Video)
-            };
-        }
-
+        public MainViewModel ViewModel => App.ViewModel;
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new ContentDialog
