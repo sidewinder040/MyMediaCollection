@@ -34,6 +34,15 @@ namespace MyMediaCollection
         {
             InitializeComponent();
             ItemList.Loaded += ItemList_Loaded;
+            ItemFilter.Loaded += ItemFilter_Loaded;
+        }
+
+        private void ItemFilter_Loaded(object sender, RoutedEventArgs e)
+        {
+            var filterCombo = (ComboBox)sender;
+            PopulateData();
+            filterCombo.ItemsSource = _mediums;
+            filterCombo.SelectedIndex = 0;
         }
 
         private void ItemList_Loaded(object sender, RoutedEventArgs e)
