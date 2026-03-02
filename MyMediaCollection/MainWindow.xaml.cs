@@ -35,6 +35,17 @@ namespace MyMediaCollection
             InitializeComponent();
             ItemList.Loaded += ItemList_Loaded;
             ItemFilter.Loaded += ItemFilter_Loaded;
+            ItemFilter.SelectionChanged += ItemFilter_SelectionChanged;
+        }
+
+        private void ItemFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var updatedItems = (from item in _allItems
+                                where string.IsNullOrWhiteSpace(ItemFilter.SelectedValue.ToString())
+                                    || ItemFilter.SelectedValue.ToString() == "All"
+                                    || ItemFilter.SelectedValue.ToString() == item.MediaType.ToString()
+                                select item).ToList();
+            ItemList.ItemsSource = updatedItems;
         }
 
         private void ItemFilter_Loaded(object sender, RoutedEventArgs e)
