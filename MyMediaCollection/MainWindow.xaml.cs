@@ -29,8 +29,8 @@ namespace MyMediaCollection
     {
         public MainWindow()
         {
-            ViewModel = App.HostContainer.Services
-                .GetService<MainViewModel>()!;
+            //ViewModel = App.HostContainer.Services
+            //    .GetService<MainViewModel>()!;
             InitializeComponent();
         }
 

@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using MyMediaCollection.ViewModels;
+using MyMediaCollection.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -56,9 +57,17 @@ namespace MyMediaCollection
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            RegisterComponents();
             _window = new MainWindow();
+            var rootFrame = new Frame();
+            RegisterComponents();
+            rootFrame.NavigationFailed += RootFrame_NavigationFailed;
+            rootFrame.Navigate(typeof(MainPage), args);
+            _window.Content = rootFrame;
             _window.Activate();
+        }
+        private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+            throw new Exception($"Error loading page {e.SourcePageType.FullName}");
         }
     }
 }

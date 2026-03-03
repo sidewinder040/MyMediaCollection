@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml.Input;
 using MyMediaCollection.Enums;
 using MyMediaCollection.Model;
 using System.Collections.Generic;
@@ -109,6 +110,11 @@ namespace MyMediaCollection.ViewModels
             allItems.Add(newItem);
             Items.Add(newItem);
             additionalItemCount++;
+        }
+
+        public void ListViewDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            AddEdit();
         }
 
         [RelayCommand(CanExecute = nameof(CanDeleteItem))]
