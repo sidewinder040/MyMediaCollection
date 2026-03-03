@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -27,9 +29,18 @@ namespace MyMediaCollection
     /// </summary>
     public partial class App : Application
     {
+        public static IHost HostContainer { get; private set;  }
         public static MainViewModel ViewModel { get; } = new MainViewModel();
         private Window? _window;
 
+        private void RegisterComponents()
+        {
+            HostContainer = Host.CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.AddTransient<MainViewModel>();
+                }).Build();
+        }
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -45,6 +56,7 @@ namespace MyMediaCollection
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            RegisterComponents();
             _window = new MainWindow();
             _window.Activate();
         }

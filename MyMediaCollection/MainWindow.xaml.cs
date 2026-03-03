@@ -15,6 +15,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using MyMediaCollection.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -26,30 +27,24 @@ namespace MyMediaCollection
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        //private bool _isLoaded;
-        //private IList<MediaItem> _items { get; set; }
-        //private IList<string> _mediums { get; set; }
-        //private IList<MediaItem> _allItems { get; set; }
-
         public MainWindow()
         {
+            ViewModel = App.HostContainer.Services
+                .GetService<MainViewModel>()!;
             InitializeComponent();
-            //ItemList.Loaded += ItemList_Loaded;
-            //ItemFilter.Loaded += ItemFilter_Loaded;
-            //ItemFilter.SelectionChanged += ItemFilter_SelectionChanged;
         }
 
-        public MainViewModel ViewModel => App.ViewModel;
-        private async void AddButton_Click(object sender, RoutedEventArgs e)
-        {
-            var dialog = new ContentDialog
-            {
-                Title = "My Media Collection",
-                Content = "Adding items to the collection not yet supported.",
-                CloseButtonText = "OK",
-                XamlRoot = Content.XamlRoot
-            };
-            await dialog.ShowAsync();
-        }
+        public MainViewModel ViewModel;
+        //private async void AddButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var dialog = new ContentDialog
+        //    {
+        //        Title = "My Media Collection",
+        //        Content = "Adding items to the collection not yet supported.",
+        //        CloseButtonText = "OK",
+        //        XamlRoot = Content.XamlRoot
+        //    };
+        //    await dialog.ShowAsync();
+        //}
     }
 }
