@@ -1,4 +1,6 @@
-﻿using MyMediaCollection.Enums;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using MyMediaCollection.Enums;
 using MyMediaCollection.Model;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,24 +8,25 @@ using System.Windows.Input;
 
 namespace MyMediaCollection.ViewModels
 {
-    public class MainViewModel : BindableBase
+    public partial class MainViewModel : ObservableObject
     {
+        [ObservableProperty]
         private string selectedMedium;
+        [ObservableProperty]
         private ObservableCollection<MediaItem> items;
-        private ObservableCollection<MediaItem> allItems;
+        [ObservableProperty]
         private IList<string> mediums;
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(DeleteCommand))]
         private MediaItem selectedMediaItem;
+
+        private ObservableCollection<MediaItem> allItems;
         private int additionalItemCount = 1;
 
         public MainViewModel()
         {
             PopulateData();
-
-            DeleteCommand = new RelayCommand(DeleteItem, CanDeleteItem);
-
-            // No CanExecute param is needed for this command
-            // because you can always add or edit items.
-            AddEditCommand = new RelayCommand(AddOrEditItem);
         }
 
         public void PopulateData()
@@ -52,7 +55,7 @@ namespace MyMediaCollection.ViewModels
                 MediumInfo = new Medium { Id = 3, MediaType = ItemType.Video, Name = "Blu Ray" }
             };
 
-            items = new ObservableCollection<MediaItem>
+            Items = new ObservableCollection<MediaItem>
             {
                 cd,
                 book,
@@ -61,7 +64,7 @@ namespace MyMediaCollection.ViewModels
 
             allItems = new ObservableCollection<MediaItem>(Items);
 
-            mediums = new List<string>
+            Mediums = new List<string>
             {
                 "All",
                 nameof(ItemType.Book),
@@ -69,70 +72,26 @@ namespace MyMediaCollection.ViewModels
                 nameof(ItemType.Video)
             };
 
-            selectedMedium = Mediums[0];
+            SelectedMedium = Mediums[0];
         }
 
-        public ObservableCollection<MediaItem> Items
+        partial void OnSelectedMediumChanged(string value)
         {
-            get
-            {
-                return items;
-            }
-            set
-            {
-                SetProperty(ref items, value);
-            }
-        }
+            Items.Clear();
 
-        public IList<string> Mediums
-        {
-            get
+            foreach (var item in allItems)
             {
-                return mediums;
-            }
-            set
-            {
-                SetProperty(ref mediums, value);
-            }
-        }
-
-        public string SelectedMedium
-        {
-            get
-            {
-                return selectedMedium;
-            }
-            set
-            {
-                SetProperty(ref selectedMedium, value);
-
-                Items.Clear();
-
-                foreach (var item in allItems)
+                if (string.IsNullOrWhiteSpace(value) ||
+                    value == "All" ||
+                    value == item.MediaType.ToString())
                 {
-                    if (string.IsNullOrWhiteSpace(selectedMedium) ||
-                        selectedMedium == "All" ||
-                        selectedMedium == item.MediaType.ToString())
-                    {
-                        Items.Add(item);
-                    }
+                    Items.Add(item);
                 }
             }
         }
 
-        public MediaItem SelectedMediaItem
-        {
-            get => selectedMediaItem;
-            set
-            {
-                SetProperty(ref selectedMediaItem, value);
-                ((RelayCommand)DeleteCommand).RaiseCanExecuteChanged();
-            }
-        }
-
-        public ICommand AddEditCommand { get; set; }
-
-        public void AddOrEditItem()
+        [RelayCommand]
+        public void AddEdit()
         {
             // Note this is temporary until
             // we use a real data source for items.
@@ -152,14 +111,13 @@ namespace MyMediaCollection.ViewModels
             additionalItemCount++;
         }
 
-        public ICommand DeleteCommand { get; set; }
-
-        public void DeleteItem()
+        [RelayCommand(CanExecute = nameof(CanDeleteItem))]
+        public void Delete()
         {
             allItems.Remove(SelectedMediaItem);
             Items.Remove(SelectedMediaItem);
         }
 
-        private bool CanDeleteItem() => selectedMediaItem != null;
+        private bool CanDeleteItem() => SelectedMediaItem != null;
     }
 }
