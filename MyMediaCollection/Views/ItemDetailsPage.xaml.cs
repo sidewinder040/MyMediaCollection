@@ -14,7 +14,6 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.Extensions.DependencyInjection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -24,14 +23,25 @@ namespace MyMediaCollection.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class ItemDetailsPage : Page
     {
-        public MainViewModel ViewModel;
-        public MainPage()
+        public ItemDetailsPage()
         {
             ViewModel = App.HostContainer.Services
-                .GetService<MainViewModel>()!;
+                .GetService<ViewModels.ItemDetailsViewModel>()!;
             InitializeComponent();
+        }
+        public ItemDetailsViewModel ViewModel;
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            var itemId = (int)e.Parameter;
+
+            if (itemId > 0)
+            {
+                ViewModel.InitializeItemDetailData(itemId);
+            }
         }
     }
 }
