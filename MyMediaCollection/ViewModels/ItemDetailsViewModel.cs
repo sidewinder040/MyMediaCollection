@@ -150,5 +150,22 @@ namespace MyMediaCollection.ViewModels
         {
             _navigationService.GoBack();
         }
+
+        public void SaveItemAndContinue()
+        {
+            Save();
+            _itemId = 0;
+            ItemName = string.Empty;
+            SelectedMedium = string.Empty;
+            SelectedItemType = string.Empty;
+            SelectedLocation = string.Empty;
+            IsDirty = false;
+        }
+
+        public void SaveItemAndReturn()
+        {
+            Save();
+            _navigationService.GoBack();
+        }
     }
 }
