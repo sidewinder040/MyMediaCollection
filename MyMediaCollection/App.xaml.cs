@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -36,17 +37,19 @@ namespace MyMediaCollection
         // public static MainViewModel ViewModel { get; } = new MainViewModel();
         private Window? _window;
 
-        private void RegisterComponents(Frame rootFrame)
+        private async Task RegisterComponents(Frame rootFrame)
         {
             var navigationService = new NavigationService(rootFrame);
             navigationService.Configure(nameof(MainPage), typeof(MainPage));
             navigationService.Configure(nameof(ItemDetailsPage), typeof(ItemDetailsPage));
+            var dataService = new SqliteDataService();
+            await dataService.InitializeDataAsync();
 
             HostContainer = Host.CreateDefaultBuilder()
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton<INavigationService>(navigationService);
-                    services.AddSingleton<IDataService, DataService>();
+                    services.AddSingleton<IDataService> (dataService);
                     services.AddTransient<MainViewModel>();
                     services.AddTransient<ItemDetailsViewModel>();
                 }).Build();
@@ -64,11 +67,11 @@ namespace MyMediaCollection
         /// Invoked when the application is launched.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             _window = new MainWindow();
             var rootFrame = new Frame();
-            RegisterComponents(rootFrame);
+            await RegisterComponents(rootFrame);
             rootFrame.NavigationFailed += RootFrame_NavigationFailed;
             rootFrame.Navigate(typeof(MainPage), args);
             _window.Content = rootFrame;

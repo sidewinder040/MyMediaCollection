@@ -6,6 +6,7 @@ using MyMediaCollection.Model;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MyMediaCollection.ViewModels
 {
@@ -28,7 +29,7 @@ namespace MyMediaCollection.ViewModels
         private string selectedLocation;
 
         [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+        //[NotifyCanExecuteChangedFor(nameof(SaveCommand))]
         private bool isDirty;
         private int _selectedItemId = -1;
         protected INavigationService _navigationService;
@@ -46,27 +47,27 @@ namespace MyMediaCollection.ViewModels
         {
             _selectedItemId = itemId;
 
-            PopulateExistingItem(_dataService);
+             //PopulateExistingItem(_dataService);
             IsDirty = false;
         }
 
-        private void PopulateExistingItem(IDataService dataService)
-        {
-            if (_selectedItemId > 0)
-            {
-                var item = _dataService.GetItem(_selectedItemId);
-                Mediums.Clear();
+        //private void PopulateExistingItem(IDataService dataService)
+        //{
+        //    if (_selectedItemId > 0)
+        //    {
+        //        var item = _dataService.GetItemAsync(_selectedItemId);
+        //        Mediums.Clear();
 
-                foreach (string medium in dataService.GetMediums(item.MediaType).Select(m => m.Name))
-                    Mediums.Add(medium);
+        //        foreach (string medium in dataService.GetMediums(item.MediaType).Select(m => m.Name))
+        //            Mediums.Add(medium);
 
-                _itemId = item.Id;
-                ItemName = item.Name;
-                SelectedMedium = item.MediumInfo.Name;
-                SelectedLocation = item.Location.ToString();
-                SelectedItemType = item.MediaType.ToString();
-            }
-        }
+        //        _itemId = item.Id;
+        //        ItemName = item.Name;
+        //        SelectedMedium = item.MediumInfo.Name;
+        //        SelectedLocation = item.Location.ToString();
+        //        SelectedItemType = item.MediaType.ToString();
+        //    }
+        //}
 
         private void PopulateLists()
         {
@@ -82,20 +83,20 @@ namespace MyMediaCollection.ViewModels
         }
 
         [RelayCommand(CanExecute = nameof(CanSaveItem))]
-        private void Save()
+        private async Task SaveItemAsync()
         {
             MediaItem item;
 
             if (_itemId > 0)
             {
-                item = _dataService.GetItem(_itemId);
+                item = await _dataService.GetItemAsync(_itemId);
 
                 item.Name = ItemName;
                 item.Location = (LocationType)Enum.Parse(typeof(LocationType), SelectedLocation);
                 item.MediaType = (ItemType)Enum.Parse(typeof(ItemType), SelectedItemType);
                 item.MediumInfo = _dataService.GetMedium(SelectedMedium);
 
-                _dataService.UpdateItem(item);
+                await _dataService.UpdateItemAsync(item);
             }
             else
             {
@@ -107,10 +108,10 @@ namespace MyMediaCollection.ViewModels
                     MediumInfo = _dataService.GetMedium(SelectedMedium)
                 };
 
-                _dataService.AddItem(item);
+                await _dataService.AddItemAsync(item);
             }
 
-            _navigationService.GoBack();
+            //_navigationService.GoBack();
         }
 
         private bool CanSaveItem()
@@ -151,20 +152,20 @@ namespace MyMediaCollection.ViewModels
             _navigationService.GoBack();
         }
 
-        public void SaveItemAndContinue()
+        public async Task SaveItemAndContinueAsync()
         {
-            Save();
+            await SaveItemAsync();
             _itemId = 0;
             ItemName = string.Empty;
-            SelectedMedium = string.Empty;
-            SelectedItemType = string.Empty;
-            SelectedLocation = string.Empty;
+            SelectedMedium = null;
+            SelectedLocation = null;
+            SelectedItemType = null;
             IsDirty = false;
         }
 
-        public void SaveItemAndReturn()
+        public async Task SaveItemAndReturnAsync()
         {
-            Save();
+            await SaveItemAsync();
             _navigationService.GoBack();
         }
     }

@@ -1,10 +1,9 @@
 ﻿using MyMediaCollection.Enums;
-using MyMediaCollection.Model;
 using MyMediaCollection.Interfaces;
+using MyMediaCollection.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MyMediaCollection.Services
@@ -15,15 +14,16 @@ namespace MyMediaCollection.Services
         private IList<ItemType> _itemTypes;
         private IList<Medium> _mediums;
         private IList<LocationType> _locationTypes;
-        public int SelectedItemId { get; set; }
 
-        public DataService()
+        public async Task InitializeDataAsync()
         {
             PopulateItemTypes();
             PopulateMediums();
             PopulateLocationTypes();
             PopulateItems();
+            await Task.Delay(1);
         }
+
         private void PopulateItems()
         {
             var cd = new MediaItem
@@ -60,6 +60,7 @@ namespace MyMediaCollection.Services
                 bluRay
             };
         }
+
         private void PopulateMediums()
         {
             var cd = new Medium { Id = 1, MediaType = ItemType.Music, Name = "CD" };
@@ -79,6 +80,7 @@ namespace MyMediaCollection.Services
                 bluRay
             };
         }
+
         private void PopulateItemTypes()
         {
             _itemTypes = new List<ItemType>
@@ -98,21 +100,24 @@ namespace MyMediaCollection.Services
             };
         }
 
-        public int AddItem(MediaItem item)
+        public async Task<int> AddItemAsync(MediaItem item)
         {
             item.Id = _items.Max(i => i.Id) + 1;
             _items.Add(item);
+            await Task.Delay(1);
 
             return item.Id;
         }
 
-        public MediaItem GetItem(int id)
+        public async Task<MediaItem> GetItemAsync(int id)
         {
+            await Task.Delay(1);
             return _items.FirstOrDefault(i => i.Id == id);
         }
 
-        public IList<MediaItem> GetItems()
+        public async Task<IList<MediaItem>> GetItemsAsync()
         {
+            await Task.Delay(1);
             return _items;
         }
 
@@ -138,7 +143,7 @@ namespace MyMediaCollection.Services
             return _locationTypes;
         }
 
-        public void UpdateItem(MediaItem item)
+        public async Task UpdateItemAsync(MediaItem item)
         {
             var idx = -1;
             var matchedItem =
@@ -153,6 +158,13 @@ namespace MyMediaCollection.Services
             }
 
             _items[idx] = item;
+            await Task.Delay(1);
+        }
+
+        public async Task DeleteItemAsync(MediaItem item)
+        {
+            await Task.Delay(1);
+            throw new NotImplementedException();
         }
 
         public Medium GetMedium(string name)
