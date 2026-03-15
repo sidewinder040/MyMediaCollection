@@ -33,9 +33,9 @@ namespace MyMediaCollection
     /// </summary>
     public partial class App : Application
     {
-        public static IHost HostContainer { get; private set;  }
-        // public static MainViewModel ViewModel { get; } = new MainViewModel();
+        public static IHost HostContainer { get; private set; }
         private Window? _window;
+        internal Window Window => _window ?? throw new InvalidOperationException("The window has not been created yet.");
 
         private async Task RegisterComponents(Frame rootFrame)
         {

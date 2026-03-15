@@ -1,4 +1,6 @@
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Windowing;
+
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -16,6 +18,8 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using MyMediaCollection.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
+using WinRT.Interop;
+using Microsoft.UI;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -27,24 +31,31 @@ namespace MyMediaCollection
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private AppWindow? _appWindow;
+        private const string AppTitle = "My Media Collection";
         public MainWindow()
         {
-            //ViewModel = App.HostContainer.Services
-            //    .GetService<MainViewModel>()!;
             InitializeComponent();
+            _appWindow = GetCurrentAppWindow();
+            _appWindow.Title = AppTitle;
+        }
+
+        private AppWindow? GetCurrentAppWindow()
+        {
+            IntPtr handle = WindowNative.GetWindowHandle(this);
+            WindowId windowId = Win32Interop.GetWindowIdFromWindow(handle);
+            return AppWindow.GetFromWindowId(windowId);
+        }
+        internal void SetPageTitle(string title)
+        {
+            if (_appWindow == null)
+            {
+                _appWindow = GetCurrentAppWindow();
+            }
+
+            _appWindow.Title = $"{AppTitle} - {title}";
         }
 
         public MainViewModel ViewModel;
-        //private async void AddButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    var dialog = new ContentDialog
-        //    {
-        //        Title = "My Media Collection",
-        //        Content = "Adding items to the collection not yet supported.",
-        //        CloseButtonText = "OK",
-        //        XamlRoot = Content.XamlRoot
-        //    };
-        //    await dialog.ShowAsync();
-        //}
     }
 }

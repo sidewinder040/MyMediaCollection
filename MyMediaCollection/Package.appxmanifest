@@ -35,8 +35,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="MyMediaCollection"
-        Description="MyMediaCollection"
+        DisplayName="My Media Collection"
+        Description="MyMediaCollection example application from the Learn WinUI book by Alvin Ashcraft"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
